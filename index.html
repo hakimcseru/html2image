@@ -1,0 +1,172 @@
+<html>
+    <head>
+<script>
+    (function (exports) {
+            function urlsToAbsolute(nodeList) {
+                if (!nodeList.length) {
+                    return [];
+                }
+                var attrName = 'href';
+                if (nodeList[0].__proto__ === HTMLImageElement.prototype || nodeList[0].__proto__ === HTMLScriptElement.prototype) {
+                    attrName = 'src';
+                }
+                nodeList = [].map.call(nodeList, function (el, i) {
+                    var attr = el.getAttribute(attrName);
+                    if (!attr) {
+                        return;
+                    }
+                    var absURL = /^(https?|data):/i.test(attr);
+                    if (absURL) {
+                        return el;
+                    } else {
+                        return el;
+                    }
+                });
+                return nodeList;
+            }
+
+            function screenshotPage() {
+                var wrapper = document.getElementById('wrapper');
+                html2canvas(wrapper, {
+                    onrendered: function (canvas) {
+                        canvas.toBlob(function (blob) {
+                            saveAs(blob, 'myScreenshot.png');
+                        });
+                    }
+                });
+            }
+
+            function addOnPageLoad_() {
+                window.addEventListener('DOMContentLoaded', function (e) {
+                    var scrollX = document.documentElement.dataset.scrollX || 0;
+                    var scrollY = document.documentElement.dataset.scrollY || 0;
+                    window.scrollTo(scrollX, scrollY);
+                });
+            }
+
+            function generate() {
+                screenshotPage();
+            }
+            exports.screenshotPage = screenshotPage;
+            exports.generate = generate;
+        })(window);
+</script>
+<style>
+@import url(https://fonts.googleapis.com/css?family=Merriweather);
+$red: #e74c3c;
+*,
+*:before,
+*:after {
+    @include box-sizing(border-box);
+}
+
+html,
+body {
+    background: #f1f1f1;
+    font-family: 'Merriweather', sans-serif;
+    padding: 1em;
+}
+
+h1 {
+    text-align: center;
+    color: #a8a8a8;
+    @include text-shadow(1px 1px 0 rgba(white, 1));
+}
+
+form {
+    border: 2px solid blue;
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 5px;
+    text-align: center;
+}
+
+input,
+textarea {
+    border: 0;
+    outline: 0;
+    padding: 1em;
+    @include border-radius(8px);
+    display: block;
+    width: 100%;
+    margin-top: 1em;
+    font-family: 'Merriweather', sans-serif;
+    @include box-shadow(0 1px 1px rgba(black, 0.1));
+    resize: none;
+    &:focus {
+        @include box-shadow(0 0px 2px rgba($red, 1)!important);
+    }
+}
+
+#input-submit {
+    color: white;
+    background: $red;
+    cursor: pointer;
+    &:hover {
+        @include box-shadow(0 1px 1px 1px rgba(#aaa, 0.6));
+    }
+}
+
+textarea {
+    height: 126px;
+}
+
+
+}
+.half {
+    float: left;
+    width: 48%;
+    margin-bottom: 1em;
+}
+.right {
+    width: 50%;
+}
+.left {
+    margin-right: 2%;
+}
+@media (max-width: 480px) {
+    .half {
+        width: 100%;
+        float: none;
+        margin-bottom: 0;
+    }
+}
+
+/* Clearfix */
+.cf:before,
+.cf:after {
+    content: " ";
+    /* 1 */
+    
+    display: table;
+    /* 2 */
+}
+.cf:after {
+    clear: both;
+}
+.half.left.cf > input {
+    margin: 5px;
+}
+</style>
+
+    </head>
+    <body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+        <div id="wrapper">
+            <h1>Scrrenshot</h1>
+            <form class="cf">
+                <div class="half left cf">
+                    <input type="text" id="input-name" placeholder="Name">
+                    <input type="email" id="input-email" placeholder="Email address">
+                    <input type="text" id="input-subject" placeholder="Subject">
+                </div>
+                <div class="half right cf">
+                    <textarea name="message" type="text" id="input-message" placeholder="Message"></textarea>
+                </div>
+                <input type="submit" value="Submit" id="input-submit">
+            </form>
+        </div>
+        <a class="btn btn-success" href="javascript:void(0);" onclick="generate();">Generate Screenshot »</a>
+    </body>
+</html>
